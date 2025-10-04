@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ISS Odyssey | 25 Years of Exploration</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #020b20;
+      color: white;
+      text-align: center;
+    }
+    .hero {
+      background: url('https://www.nasa.gov/sites/default/files/thumbnails/image/iss065e297748.jpg') no-repeat center/cover;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .hero h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+    .hero p { font-size: 1.3rem; margin-bottom: 1rem; }
+    .hero button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1.1rem;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .hero button:hover { background: #0056b3; }
+
+    section { padding: 60px 20px; }
+    h2 { color: #4fc3f7; margin-bottom: 20px; }
+
+    .timeline-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .event {
+      background: #0d1b3d;
+      padding: 20px;
+      border-radius: 10px;
+      width: 200px;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    iframe { border-radius: 10px; width: 90%; max-width: 600px; height: 315px; }
+
+    #iss-location { font-size: 1.2rem; color: #ffeb3b; }
+
+    #map { height: 500px; width: 90%; margin: 20px auto; border-radius: 10px; }
+
+    .quiz { background: #0a1735; border-radius: 10px; margin: 40px auto; width: 90%; max-width: 600px; padding: 20px; }
+    #quiz-container { margin-bottom: 15px; }
+    #next-btn {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #next-btn:hover { background: #3e8e41; }
+
+    footer {
+      background: #010a1a;
+      padding: 20px;
+      color: #bbb;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <h1>🌌 ISS Odyssey</h1>
+    <p>Celebrating 25 Years of Human Presence in Space</p>
+    <button onclick="scrollToSection('timeline')">Start Your Journey 🚀</button>
+  </section>
+
+  <section id="timeline" class="timeline">
+    <h2>🛰️ Journey Through Time</h2>
+    <div class="timeline-container">
+      <div class="event"><h3>2000</h3><p>First crew arrives on the ISS.</p></div>
+      <div class="event"><h3>2011</h3><p>Space Shuttle Atlantis completes final mission.</p></div>
+      <div class="event"><h3>2020</h3><p>First commercial crewed mission by SpaceX.</p></div>
+      <div class="event"><h3>2025</h3><p>25 Years of continuous human presence!</p></div>
+    </div>
+  </section>
+
+  <section class="history">
+    <h2>🌍 The Story of the ISS</h2>
+    <p>The International Space Station (ISS), launched in 1998, is a joint project of NASA, Roscosmos, ESA, JAXA, and CSA. It has hosted continuous human presence since 2000, serving as a space laboratory for science, technology, and international cooperation, symbolizing humanity’s greatest achievement in orbit..</p>
+  </section>
+
+  <section class="tour">
+    <h2>🎥 Virtual Tour</h2>
+    <iframe src="https://www.youtube.com/embed/doN4t5NKW-k" title="Virtual ISS Tour" allowfullscreen></iframe>
+  </section>
+
+  <section class="live-tracker">
+    <h2>🛰️ Live ISS Tracker</h2>
+    <p id="iss-location">Loading current ISS position...</p>
+    <div id="map"></div>
+  </section>
+
+  <section class="quiz">
+    <h2>🧠 ISS Quiz</h2>
+    <div id="quiz-container"></div>
+    <button id="next-btn">Next Question</button>
+  </section>
+
+  <footer>
+    <p>Made with ❤️ for NASA Space Apps 2025 | ISS 25th Anniversary Challenge</p>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    function scrollToSection(id){
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- LIVE ISS LOCATION (Open Notify) ---
+    const issIcon = L.icon({
+      iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d0/International_Space_Station.svg',
+      iconSize: [50, 32]
+    });
+
+    const map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const marker = L.marker([0, 0], { icon: issIcon }).addTo(map);
+
+    async function updateISS() {
+      const response = await fetch('http://api.open-notify.org/iss-now.json');
+      const data = await response.json();
+      const lat = data.iss_position.latitude;
+      const lon = data.iss_position.longitude;
+      marker.setLatLng([lat, lon]);
+      map.setView([lat, lon], 3);
+      document.getElementById('iss-location').innerText = `Latitude: ${lat}°, Longitude: ${lon}°`;
+    }
+
+    setInterval(updateISS, 5000);
+    updateISS();
+
+    // --- QUIZ SECTION ---
+    const quizData = [
+      { q: 'When was the first ISS module launched?', a: '1998' },
+      { q: 'How many people can the ISS typically host?', a: '6' },
+      { q: 'Which company conducted the first private crewed mission?', a: 'SpaceX' },
+      { q: 'What is the orbital speed of the ISS?', a: '28,000 km/h' }
+    ];
+
+    let currentQ = 0;
+    const quizContainer = document.getElementById('quiz-container');
+    const nextBtn = document.getElementById('next-btn');
+
+    function loadQuestion() {
+      if (currentQ < quizData.length) {
+        quizContainer.innerHTML = `<p>${quizData[currentQ].q}</p><input id='answer' placeholder='Your answer...' />`;
+      } else {
+        quizContainer.innerHTML = '<h3>🎉 You completed the ISS Quiz!</h3>';
+        nextBtn.style.display = 'none';
+      }
+    }
+
+    nextBtn.addEventListener('click', () => {
+      const ans = document.getElementById('answer')?.value.trim();
+      if (!ans) return alert('Please enter an answer!');
+      if (ans.toLowerCase() === quizData[currentQ].a.toLowerCase()) {
+        alert('✅ Correct!');
+      } else {
+        alert(`❌ The correct answer was: ${quizData[currentQ].a}`);
+      }
+      currentQ++;
+      loadQuestion();
+    });
+
+    loadQuestion();
+  </script>
+</body>
+</html>
