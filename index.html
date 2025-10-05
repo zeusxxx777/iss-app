@@ -4,16 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ISS Odyssey | 25 Years of Exploration</title>
-  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #020b20;
+      background: #020b20 url('https://www.transparenttextures.com/patterns/stardust.png');
       color: white;
       text-align: center;
     }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/d/d0/International_Space_Station.svg') no-repeat center;
+      background-size: 400px;
+      opacity: 0.06;
+      pointer-events: none;
+      z-index: -1;
+    }
+
     .hero {
       background: url('https://www.nasa.gov/sites/default/files/thumbnails/image/iss065e297748.jpg') no-repeat center/cover;
       height: 100vh;
@@ -21,7 +33,19 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      position: relative;
     }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(2,11,32,0.55), rgba(2,11,32,0.75));
+      z-index: 0;
+    }
+
+    .hero h1, .hero p, .hero button { position: relative; z-index: 1; }
+
     .hero h1 { font-size: 3rem; margin-bottom: 0.5rem; }
     .hero p { font-size: 1.3rem; margin-bottom: 1rem; }
     .hero button {
@@ -67,6 +91,53 @@
     }
     #next-btn:hover { background: #3e8e41; }
 
+    .iss-photo-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .iss-photo-container img {
+      width: 350px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s;
+    }
+    .iss-photo-container img:hover {
+      transform: scale(1.05);
+    }
+
+    .reflection {
+      background: rgba(10, 23, 53, 0.7);
+      border-radius: 15px;
+      margin: 40px auto;
+      width: 90%;
+      max-width: 800px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+    .reflection h2 { color: #4fc3f7; margin-bottom: 15px; }
+    .reflection p { font-size: 1.1rem; line-height: 1.6; color: #e0e0e0; }
+    .reflection blockquote {
+      margin-top: 20px;
+      font-style: italic;
+      color: #ffc107;
+    }
+
+    .gallery { padding: 40px 20px; }
+    .gallery-container {
+      display:flex; flex-wrap:wrap; justify-content:center; gap:15px;
+    }
+    .gallery-container img {
+      width: 300px; border-radius:10px; transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    }
+    .gallery-container img:hover {
+      transform: scale(1.04);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    }
+
     footer {
       background: #010a1a;
       padding: 20px;
@@ -94,7 +165,28 @@
 
   <section class="history">
     <h2>🌍 The Story of the ISS</h2>
-    <p>The International Space Station (ISS), launched in 1998, is a joint project of NASA, Roscosmos, ESA, JAXA, and CSA. It has hosted continuous human presence since 2000, serving as a space laboratory for science, technology, and international cooperation, symbolizing humanity’s greatest achievement in orbit..</p>
+    <p>The International Space Station (ISS), launched in 1998, is a joint project of NASA, Roscosmos, ESA, JAXA, and CSA. It has hosted continuous human presence since 2000, serving as a space laboratory for science, technology, and international cooperation, symbolizing humanity’s greatest achievement in orbit.</p>
+  </section>
+
+  <section class="iss-photos">
+    <h2>📷 The View from the Station</h2>
+    <div class="iss-photo-container">
+      <img src="https://images.fineartamerica.com/images/artworkimages/mediumlarge/3/international-space-station-orbiting-earth-3dsculptor.jpg" alt="ISS orbiting Earth">
+      <img src="https://images.pond5.com/earth-seen-through-window-international-footage-087566322_prevstill.jpeg" alt="Earth from ISS window">
+    </div>
+  </section>
+
+  <section class="reflection">
+    <h2>🌠 25 Years of Humanity in Orbit</h2>
+    <p>
+      For a quarter of a century, the International Space Station has been more than metal and solar panels — 
+      it’s been a bridge between nations, a classroom for future explorers, and a home above the world.  
+      Every sunrise it witnesses reminds us that Earth has no borders when we look from the stars.
+    </p>
+    <blockquote>
+      “The ISS proves that when humanity looks up together, we can stay up together.”  
+      — NASA Space Apps 2025
+    </blockquote>
   </section>
 
   <section class="tour">
@@ -114,6 +206,15 @@
     <button id="next-btn">Next Question</button>
   </section>
 
+  <section class="gallery">
+    <h2>📸 Life Aboard the ISS</h2>
+    <div class="gallery-container">
+      <img loading="lazy" src="https://i.insider.com/6361c8446e8b9800192dfee6?width=1000" alt="ISS Window View">
+      <img loading="lazy" src="https://cdn.mos.cms.futurecdn.net/7zESorJYQwHkuHbQYdBEbN.jpg.webp" alt="ISS Crew Working">
+      <img loading="lazy" src="https://www.hdwallpapers.in/thumbs/2016/earth_from_space_4k-t2.jpgg" alt="Earth from Space">
+    </div>
+  </section>
+
   <footer>
     <p>Made with ❤️ for NASA Space Apps 2025 | ISS 25th Anniversary Challenge</p>
   </footer>
@@ -124,7 +225,6 @@
       document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
     }
 
-    // --- LIVE ISS LOCATION (Open Notify) ---
     const issIcon = L.icon({
       iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d0/International_Space_Station.svg',
       iconSize: [50, 32]
@@ -150,7 +250,6 @@
     setInterval(updateISS, 5000);
     updateISS();
 
-    // --- QUIZ SECTION ---
     const quizData = [
       { q: 'When was the first ISS module launched?', a: '1998' },
       { q: 'How many people can the ISS typically host?', a: '6' },
